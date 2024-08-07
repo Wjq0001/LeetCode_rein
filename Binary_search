@@ -1,1 +1,22 @@
+###########################################################################################Binary_search######################################
+class Solution(object)
+    def search(self, nums ,target):
 
+    right,left=len(nums),0
+    while left < right:
+          key = (right+left)/2
+          if nums[key] < target:
+              left=key+1
+          if nums[key] > target:
+              right=key-1
+          else:
+              return key
+    return -1
+
+
+if _name_=="_main_":
+  solution=Solution()
+  nums = [1, 2, 5, 7, 9]
+  target = 5
+  result=solution.search(nums,target)
+  print("Index of target:", result)
