@@ -1,1 +1,10 @@
+########################################################################problem_209#########################################
+class Solution{
+public:
+      int minSubArrayLen(int target,vector<int>& nums){
+          int length=nums.size();
+          int s=0;
+          int label=0;
 
+      }
+}
