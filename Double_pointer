@@ -1,1 +1,271 @@
+################################################################################Double_pointer########################################################################
+//////////////////////////////////////////////////////////////////////////////////////////////one/////////////////////////////////////////////////////////
+class Solution(object)
+  def removeElement(self, nums, val)
 
+      k=len(nums)
+      i=0
+      while i<k:
+        if nums[i]==val:
+          for j in range(i+1,k):
+                  nums[j-1]=nums[j]
+              k=k-1
+              i=i-1
+          i+=1
+    return k
+
+class Solution{
+public:
+      int removeElement(vector<int>& nums, int val) {
+      
+            int i=0;
+            int s=nums.size();
+            while (i<s){
+                if(nums[i]!=val){
+                    for(int j=i;j<s-1;j++){
+                        nums[j]=nums[j+1];
+                    }
+                      s--;
+                      i--;
+                }
+              i++;
+            }
+        return s;
+      }
+};
+//////////////////////////////////////////////////////////////////////////////////two/////////////////////////////////////////////////////////
+class Solution(object):
+        def removeElement(self, nums, val)
+
+        k=len(nums)
+        slowIndex,fastIndex=0,0
+        while fastIndex < k:
+          if nums[fastIndex]!=val:
+              nums[slowIndex]=nums[fastIndex]
+              slowIndex+=1
+            fasteIndex+=1
+      return slowIndex
+
+class Solution{
+public:
+      int removeElement(vector<int>& nums, int val) {
+            int fast=0;
+            int slow=0;
+            int s=nums.size();
+            while (fast<s){
+                if(nums[fast]!=val){
+                    nums[slow]=nums[fast];
+                    slow++;
+                }
+              fast++;
+            }
+        return slow;
+      }
+};
+//////////////////////////////////////////////////////////////////////////////////three/////////////////////////////////////////////////////////
+class Solution{
+public:
+    int removeElement(vector<int>& nums, int val){
+        int left=0;
+        int right=nums.size()-1;
+        sort(nums.begin(),nums.end());
+        int mid=0;
+        while(left<=right){
+              mid=(right+left)/2;
+              if(nums[mid]<val) left=mid+1;
+              else if(nums[mid]>val) right=mid-1;
+              else break;
+        }
+        if(right<left) return nus.size();
+        for(int i=mid;i<nums.size();i++){
+            if(nums[i]==val) left=i;
+            else break;
+        }
+        for(int i=mid;i<nums.size();i++){
+            if(nums[i]==val) right=i;
+            else break;
+        }
+        int index=right+1;
+        for(int i=left;index<nums.size();i++,index++){
+            nums[i]=nums[index];
+        }
+        return nums.size()-(right-left+1);
+    }
+};
+
+################################################################################problem_26########################################################################
+class Solution{
+publilc:
+        int removeDuplicates(vector<int>& nums, int target)
+
+            int slow=0;
+            int fast=1;
+            int s=nums.size();
+            if(s==0) return0;
+            while(fast<s){
+                if(nums[slow]!=nums[fast]){
+                    slow++;
+                    nums[slow]=nums[fast];
+                }
+              fast++;
+            }
+        return slow+1;
+}
+};
+
+################################################################################problem_283########################################################################
+class Solution{
+public:
+        void moveZeroes(vector<int>& nums, int target){
+              int slow=0;
+              int fast=0;
+              while(fast<nums.size()){
+                  if(nums[fast]!=0){
+                        nums[slow]=nums[fast];
+                        slow++;
+                  }
+                fast++;
+              }
+              for(slow;slow<nums.size();slow++){
+                  nums[slow]=0;
+              }
+        }
+}
+
+
+################################################################################problem_844########################################################################
+
+class Solution{
+public:
+        string realString(string& s){
+              int i=0;
+              string s1;
+              while(i<s.size()){
+                    if(s[i]!='#') s1+=s[i];
+                    else if(!s1.empty()){
+                          s1.pop_back();
+                    }
+                    i++;
+              }
+            return s1;
+        }
+
+        bool bakspaceCompare(string s, string t)
+        string s_real=realString(s);
+        string t_real=realString(t);
+
+        return s_real==t_real;
+}
+};
+
+
+class Solution{
+puublic:
+        bool backspaceCompare(string s, string t)
+              stack<char> st;
+              for(char c:s){
+                  if(c=='#'){
+                          if(!st.empty()) st.pop();
+                  }
+                  else st.push(c);
+              }
+              stack<char> st2;
+              for(cahr c:t){
+                  if(c=='#'){
+                        if(!st2.empty()) st2.pop();
+                  }
+                else st2.push(c);
+              }
+              if(st.size()!=st2.size()) return false
+              while(!st.empty()&&!st2.empty()){
+                  if(st.top()!=st2.top()) return false
+                  st.pop();
+                  st2.pop();
+              }
+              return true;
+}
+};
+
+
+
+
+class Solution{
+public:
+    bool bakspaceCompare(string s,sstring t)
+        int i=s.size()-1;
+        int j=t.size()-1;
+        int skipnum_s=0;
+        int skipnum_t=0;
+        while(i>=0||j>=0){
+            while(i>=0){
+                if(s[i]=='#'){
+                    skipnum_s++;
+                    i--;
+                }
+                else if(skipnum_s!=0){
+                    skipnum_s--;
+                    i--;
+                }
+                else{
+                  break;
+                }
+            }
+            while(j>=0){
+                  if(t[j]=='#'){
+                      skipnum_t++;
+                      j--;
+                  }
+            else if(skipnum_t!=0){
+                      skipnum_t--;
+                      j--;
+            }
+            else{
+                break;
+            }
+            }
+            if(i>=&&j>=0){
+                  if(s[i]!=t[j]) return false;
+            }
+            else{
+                  if(i>=0||j>=0) return false;
+            }
+            i--;
+            j--;
+        }
+        return true;
+}
+};
+
+################################################################################problem_977########################################################################
+class Solution{
+public:
+      vector<int> sortSquares(vector<int>& nums){
+        for(int i=0;i<nums.size();i++){
+                nums[i]=nums[i]*nums[i];
+        }
+        sort(nums.begin(),nums.end());
+        return nums;
+      }
+};
+
+class Solution{
+public:
+      vector<int> sortedSquares(vector<int>& nums){
+              int i=0;
+              int j=nums.size()-1;
+              vector<int> new_nums(j+1);
+              int k=j;
+              while(i<=j){
+                  if(nums[i]*nums[i]<nums[j]*nums[j]){
+                        new_nums[k] = nums[j]*nums[j];
+                        j--;
+                  }
+                  else{
+                        new_nums[k]=nums[i]*nums[i];
+                        i++;
+                  }
+                  k--;
+              }
+              return new_nums;
+  }
+};
