@@ -1,0 +1,741 @@
+###################################################problem_203###############################################################################################################
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+        //定义一个虚拟头结点进行操作
+        ListNode* new_head=new ListNode(0);
+        new_head->next=head;
+        ListNode* vir_head=new_head;
+        while(vir_head->next!=NULL){
+            if(vir_head->next->val==val){
+                ListNode* temp=vir_head->next;
+                vir_head->next=vir_head->next->next;
+                delete temp;//c++需要手动释放内存
+            }
+            else{
+                vir_head=vir_head->next;
+            }  
+        }
+
+        head=new_head->next;//如果头结点需要删除的话new_head的指向是会变的，所以必须要重新赋值
+        delete new_head;
+        return head;
+
+    }
+};
+###################################################problem_203###############################################################################################################
+class MyLinkedList {//一个链表类，封装了链表的一些操作函数
+public:
+    //  定义链表
+    // 单链表
+    struct ListNode {
+        int val;  // 节点上存储的元素
+        ListNode *next;  // 指向下一个节点的指针
+        ListNode(int x) : val(x), next(NULL) {}  // 节点的构造函数
+    };//这里一定要记得写；
+
+    MyLinkedList() {
+        vir_head=new ListNode(0);//设置虚拟头结点进行操作
+        _size=0;//链表初始化大小为0
+    }
+    
+    //获取链表中第 index 个节点的值。如果索引无效，则返回-1。
+    int get(int index) {
+        if(index>=_size||index<0) return -1;
+        ListNode* cur=new ListNode(0);
+        cur=vir_head->next;
+        while(index--){
+            cur=cur->next;      
+        }
+        return cur->val;
+    }
+    
+    //在链表的第一个元素之前添加一个值为 val 的节点。插入后，新节点将成为链表的第一个节点。
+    void addAtHead(int val) {
+        ListNode* cur=new ListNode(val);//创建值为 val 的节点
+        cur->next=vir_head->next;
+        vir_head->next=cur;
+        _size++;
+
+    }
+    
+    //将值为 val 的节点追加到链表的最后一个元素。
+    void addAtTail(int val) {
+        ListNode* cur=new ListNode(val);//创建值为 val 的节点
+        ListNode* temp=new ListNode(0);
+        temp=vir_head;
+        while(temp->next!=NULL){
+            temp=temp->next;
+        }
+        temp->next=cur;//经过while循环后temp->next为NULL
+        cur->next=NULL;
+        _size++;
+
+    }
+    
+    //在链表中的第 index 个节点之前添加值为 val  的节点。如果 index 等于链表的长度，则该节点将附加到链表的末尾。如果 index 大于链表长度，则不会插入节点。如果index小于0，则在头部插入节点。
+    void addAtIndex(int index, int val) {
+        if(index > _size) return;
+        ListNode* cur=new ListNode(val);//创建值为 val 的节点
+        if(index<0){
+            //在头部插入节点
+            cur->next=vir_head->next;
+            vir_head->next=cur;
+        }
+        ListNode* temp=new ListNode(0);
+        temp=vir_head;
+        while(index--){
+            temp=temp->next;
+        }
+       
+        cur->next=temp->next; 
+        temp->next=cur;
+        _size++;
+    }
+    
+    //如果索引 index 有效，则删除链表中的第 index 个节点。
+    void deleteAtIndex(int index) {
+        if(index>=_size||index<0) return;
+        ListNode* temp=new ListNode(0);
+        temp=vir_head;
+        while(index--){
+            temp=temp->next;
+        }
+        //第index 个节点在temp的下一个节点
+        ListNode* temp1=temp->next;
+        temp->next=temp->next->next;
+        //delet temp->next;//不能这样写，会报错,思考了一下，大概是因为temp->next是指向temp的下一个节点的指针，不能删掉指针，应该是删掉节点
+        delete temp1;
+        _size--;
+    }
+
+    private:
+        int _size;
+        ListNode* vir_head;
+};
+
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * MyLinkedList* obj = new MyLinkedList();
+ * int param_1 = obj->get(index);
+ * obj->addAtHead(val);
+ * obj->addAtTail(val);
+ * obj->addAtIndex(index,val);
+ * obj->deleteAtIndex(index);
+ */
+
+
+
+
+ class MyLinkedList {
+public:
+
+    struct listNode{
+        int val;
+        listNode* next;
+        listNode(int x):val(x),next(NULL) {}
+    };
+
+    MyLinkedList() {
+        head=new listNode(0);//定义虚拟头节点
+        listSize=0;
+        
+    }
+    
+    int get(int index) {
+        if(index>=listSize||index<0){
+            return -1;
+        }
+        int s=0;
+        listNode* cur = head;
+        int k=0;
+        while(cur->next!=NULL){
+            
+            if(s==index){
+                listNode* temp=cur->next;
+                k=temp->val;
+            }
+            s++;
+            cur=cur->next;
+        }
+        return k;
+    }
+    
+    void addAtHead(int val) {
+        listNode* L=new listNode(val);
+        L->next=head->next;
+        head->next=L;
+        listSize++;
+    }
+    
+    void addAtTail(int val) {
+        listNode* tailNode=new listNode(val);
+        listNode* cur=head;
+        while(cur->next!=NULL){
+            cur=cur->next;
+        }
+        cur->next=tailNode;
+        tailNode->next=NULL;
+        listSize++;
+
+    }
+    
+    void addAtIndex(int index, int val) {
+        listNode* newNode=new listNode(val);
+
+        listNode* cur=head;
+        if(index<0){
+            newNode->next=head->next;
+            head->next=newNode;
+            
+        }
+        if(index==listSize){
+            while(cur->next!=NULL){
+                cur=cur->next;
+            }
+            cur->next=newNode;
+            newNode->next=NULL;
+            
+        }
+        if(index>listSize){
+            return;
+        }
+        int s=0;
+        cur=head;
+        while(cur->next!=NULL){
+            if(s==index){
+                
+                newNode->next=cur->next;
+                cur->next=newNode;
+            }
+            s++;
+            cur=cur->next;
+        }
+        listSize++;
+    }
+    
+    void deleteAtIndex(int index) {
+
+        listNode* cur=head; 
+        int s=0;
+        while(cur->next!=NULL){
+            if(s==index){
+                listNode* temp=cur->next;
+                cur->next=cur->next->next;
+                delete temp;
+                listSize--;
+           
+            }
+        }    
+        
+    }
+
+private:
+    int listSize;
+    listNode* head;
+};
+
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * MyLinkedList* obj = new MyLinkedList();
+ * int param_1 = obj->get(index);
+ * obj->addAtHead(val);
+ * obj->addAtTail(val);
+ * obj->addAtIndex(index,val);
+ * obj->deleteAtIndex(index);
+ */
+#include <cstddef>
+#include <iostream>
+using namespace std;
+
+
+class MyLinkedList {
+public:
+
+    struct listNode {
+        int val;
+        listNode* next;
+        listNode(int x) :val(x), next(NULL) {}
+    };
+
+    MyLinkedList() {
+        head = new listNode(0);//定义虚拟头节点
+        listSize = 0;
+
+    }
+
+    int get(int index) {
+        if (index >= listSize || index < 0) {
+            return -1;
+        }
+        int s = 0;
+        listNode* cur = head;
+        int k = 0;
+        while (cur->next != NULL) {
+
+            if (s == index) {
+                listNode* temp = cur->next;
+                k = temp->val;
+                break;
+            }
+            s++;
+            cur = cur->next;
+        }
+        return k;
+    }
+
+    void addAtHead(int val) {
+        listNode* L = new listNode(val);
+        L->next = head->next;
+        head->next = L;
+        listSize++;
+    }
+
+    void addAtTail(int val) {
+        listNode* tailNode = new listNode(val);
+        listNode* cur = head;
+        while (cur->next != NULL) {
+            cur = cur->next;
+
+        }
+        cur->next = tailNode;
+        tailNode->next = NULL;
+        listSize++;
+
+    }
+
+    void addAtIndex(int index, int val) {
+        listNode* newNode = new listNode(val);
+
+        listNode* cur = head;
+        if (index < 0) {
+            newNode->next = head->next;
+            head->next = newNode;
+
+        }
+        if (index == listSize) {
+            while (cur->next != NULL) {
+                cur = cur->next;
+            }
+            cur->next = newNode;
+            newNode->next = NULL;
+
+        }
+        if (index > listSize) {
+            return;
+        }
+        int s = 0;
+        cur = head;
+        while (cur->next != NULL) {
+            if (s == index) {
+
+                newNode->next = cur->next;
+                cur->next = newNode;
+                break;
+            }
+            s++;
+            cur = cur->next;
+        }
+        listSize++;
+    }
+
+    void deleteAtIndex(int index) {
+        if (index >= listSize || index < 0) return;
+        listNode* cur = head;
+        int s = 0;
+        while (cur->next != NULL) {
+            if (s == index) {
+                listNode* temp = cur->next;
+                cur->next = cur->next->next;
+                delete temp;
+                listSize--;
+                break;
+
+            }
+            s++;
+            cur = cur->next;
+        }
+
+    }
+    void output() {
+        listNode* cur = head;
+        while (cur->next != NULL) {
+            cout << cur->next->val;
+            cout << "-";
+            cur = cur->next;
+        }
+        cout << endl;
+    }
+
+private:
+    int listSize;
+    listNode* head;
+};
+
+
+
+int main() {
+    MyLinkedList* obj = new MyLinkedList();
+    obj->addAtHead(1);
+    obj->output();
+    cout << "已在头部添加成功" << endl;
+
+    obj->addAtTail(3);
+    obj->output();
+
+    obj->addAtIndex(1,2);
+    obj->output();
+
+    cout<<obj->get(1)<<endl;
+
+    obj->deleteAtIndex(1);
+    obj->output();
+
+    cout<<obj->get(1)<<endl;
+   
+}
+ ###################################################problem_206###############################################################################################################
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* cur=head;
+        ListNode* left;
+        ListNode* right;
+        while(cur->next!=NULL){
+            left=cur;
+            right=cur->next;
+            cur=cur->next;
+            right->next=left;
+        }
+        return cur;
+    }
+};
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        //使用双指针法反转链表，只需改变指针指向即可
+        ListNode* left=NULL;
+        ListNode* right=head;
+        ListNode* temp=new ListNode();
+        while(right!=NULL){
+            temp=right->next;
+            right->next=left;
+            left=right;
+            right=temp;
+
+        }
+        return left;
+    }
+};
+
+
+class Solution {
+public:
+    ListNode* reverse(ListNode* pre,ListNode* cur){
+        if(cur == NULL) return pre;
+        ListNode* temp = cur->next;
+        cur->next = pre;
+        // 可以和双指针法的代码进行对比，如下递归的写法，其实就是做了这两步
+        // pre = cur;
+        // cur = temp;
+        return reverse(cur,temp);//最终会返回最后一次递归中pre的位置，也就是反转前的链表尾部
+    }
+    ListNode* reverseList(ListNode* head) {
+        // 和双指针法初始化是一样的逻辑
+        // ListNode* cur = head;
+        // ListNode* pre = NULL;
+        return reverse(NULL, head);
+    }
+
+};
+
+
+  ###################################################problem_24###############################################################################################################
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        ListNode* left=head;
+        ListNode* right=head;
+        ListNode* temp;//交换时的临时节点
+        ListNode* vir_head=new ListNode(0);//虚拟头结点
+        vir_head->next=head;
+        ListNode* move_head=vir_head;//每一轮交换的虚拟头结点
+        int label=0;//记录虚拟头结点变化次数
+        while(left&&left->next){           
+            right=left->next;
+            move_head->next=right;
+            //完成节点交换
+            temp=right->next;//while里面判断了right不为NULL
+            right->next=left;
+            left->next=temp;
+
+            //改变虚拟头结点指向
+            if(label<1){//虚拟头结点只会变换一次
+                vir_head->next=right;
+                label++;
+            }
+
+            //进行下一轮交换
+            left=temp;
+            //right=temp->next;//不能在这里移动right节点是因为temp此时可能为NULL，所以temp的下一位是无效的，代码会出错，需要在while里面判断一下此时的temp（left）是否为空
+            move_head=move_head->next->next;
+        }
+        return vir_head->next;
+
+    }
+};
+
+
+
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if(head==NULL) return head;
+        ListNode* dummy_head=new ListNode(0);
+        dummy_head->next=head;
+        ListNode* cur=dummy_head;
+        while(cur->next!=NULL&&cur->next->next!=NULL){
+            ListNode* temp=cur->next;
+            ListNode* tmp1 = cur->next->next->next;
+            cur->next=cur->next->next;
+            cur->next->next=temp;
+            temp->next=tmp1;
+            cur=cur->next->next;
+        }
+        return dummy_head->next;
+    }
+};
+
+
+
+  ###################################################problem_19###############################################################################################################
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        //使用双指针完成
+        //设置虚拟头结点
+        //删掉倒数第n个结点，指向虚拟节点的指针需要走size-n+1步走到需删除的节点处
+        ListNode* vir_head=new ListNode(0);//虚拟头结点
+        vir_head->next=head;
+        ListNode* left=vir_head;
+        ListNode* right=vir_head;
+        for(int i=0;i<n;i++){
+            right=right->next;//right指针先走n步
+        }
+        while(right->next){//right走到尾部
+            right=right->next;
+            left=left->next;//走到被删节点的上一个节点
+        }
+        ListNode* temp=left->next;
+        left->next=temp->next;
+        delete temp;
+        return vir_head->next;
+        //不用单独考虑头结点被删的情况，这种情况下，left没有发生移动，最终将left指向了头结点的下一个结点，此时left和vir_head都是指向的同一个指针，所以返回的vir_head->next和left->next是一样的，不会出错
+    }
+};
+
+
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* dummy_head=new ListNode(0);
+        dummy_head->next=head;
+        ListNode* cur=head;
+        int size=0;
+        while(cur){
+            size++;
+            cur=cur->next;
+        }
+        int turns=size-n;
+        cur=dummy_head;
+        while(turns--){
+            cur=cur->next;
+        }
+        ListNode* temp=cur->next;
+        cur->next=temp->next;
+        delete temp;
+        return dummy_head->next;
+    }
+};
+
+
+
+  ###################################################problem_07###############################################################################################################
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+
+ //首先需要理解题意，如果存在交点的话，交点以及交点之后的所有节点的地址都是相等的，并不是交点以及交点之后的值相等
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode* A=headA;
+        ListNode* B=headB;
+        ListNode* tem=new ListNode(0);//存放相等的点
+        int label=0;
+        while(A!=NULL&&B!=NULL){
+            
+            //经过该循环的B与A相等或B到了尾部
+            while(A!=B){
+                if(B!=NULL)
+                B=B->next;
+                else break;
+            }
+            if(B==NULL) B=headB;//这里写if(B)时会出错，所有的测试用例都直接输出的第一个数
+            else{
+                return A;
+            }
+            A=A->next;//
+            }
+            return 0;
+    }
+};
+
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode* curA=headA;
+        ListNode* curB=headB;
+        int sizeA=0;
+        int sizeB=0;
+        while(curA){
+            sizeA++;
+            curA=curA->next;
+        }
+        while(curB){
+            sizeB++;
+            curB=curB->next;
+        }
+        curA=headA;curB=headB;
+        if(sizeA>sizeB){
+            int turns=sizeA-sizeB;
+            while(turns--) curA=curA->next;
+        } 
+        else{
+            int turns=sizeB-sizeA;
+            while(turns--) curB=curB->next;
+        }
+        while(curA){
+            if(curA==curB) return curA;
+            curA=curA->next;
+            curB=curB->next;
+        }
+        return NULL;
+    }
+};
+
+
+
+  ###################################################problem_142###############################################################################################################
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode* slow=head;
+        ListNode* fast=head;
+        ListNode* meet=new ListNode(0);
+        //判断是否有环，有环的话快慢指针一定会相遇
+        //需要思考没有环的情况怎么判断，fast指针每次走两步，所以只需判断fast或者fast->next是否为null
+        while(fast!=NULL&&fast->next!=NULL){
+            slow=slow->next;
+            fast=fast->next->next;//fast指针每次走两步
+            if(fast==slow){
+                meet=fast;
+                break;//找到了相遇节点退出循环
+            }
+        }
+        if(fast==NULL||fast->next==NULL){//说明没有环
+            return NULL;
+        }
+        slow=head;
+        while(slow!=meet){
+            slow=slow->next;
+            meet=meet->next;
+        }
+        return slow;
+
+    }
+};
+
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        if(head==NULL) return NULL;
+        ListNode* slow=head;
+        ListNode* fast=head;
+        while(fast&&fast->next!=NULL&&slow->next!=NULL){
+            slow=slow->next;
+            fast=fast->next->next;
+            if(slow==fast){
+                ListNode* index1=head;
+                ListNode* index2=slow;
+                while(index1!=index2){
+                    index1=index1->next;
+                    index2=index2->next;
+                }
+                return index1;
+            }
+        }
+        return NULL;
+    }
+};
+
+
+
+
