@@ -6,5 +6,220 @@ public:
           int s=0;
           int label=0;
 
+          for (int i=0;i<nums.size();i++)
+            s=0;
+            for(int j=i;j<nums.size();j++)
+                  s+=nums[j];
+                  if(s>=target){
+                        label=1;
+                        if(length>j-i+1)
+                        length=j-i+1;
+                        break;
+                        
+                  }
       }
 }
+      if(label) return length;
+      else return 0;
+      }
+};
+
+
+class Solutio{
+public:
+      int minSubArrayLen(int target, vector<int>& nums){
+            int i=0;
+            int j=0;
+            int sum=0;
+            int length=nums.size()+1;
+            while(j<nums.size()){
+                  sum=0;
+                  for(int k=i;k<=j;k++)
+                  {
+                        sum+=nums[k]
+                  }
+                  if(sum>=target){
+                        if(length>j-i+1)
+                        length=j-i+1;
+                        i++;
+                  }
+                  else j++;
+            }
+            return length==nuums.size()+1 ? 0:length;
+}
+};
+
+
+class Solution {
+public:
+      int minSubArrayLen(int s,vector<int>& nums){
+            int result = INT32_MAX;
+            int sum = 0;
+            int i = 0;
+            int subLength = 0;
+            for (int j = 0; j<nums.size(); j++){
+                  sum +=nums[j];
+                  while (sum >= s){
+                        subLength = (j-i+1);
+                        result=result<subLENGTH ? result : subLength;
+                        sum -= nums[i++];
+                  }
+            }
+            return result == INT32_MAX ? 0 : result;
+
+      }
+};
+
+
+#########################################################problem_904#####################################
+class Solution{
+public:
+      int totalFruit(vector<int>& tree){
+            unordered_map<int,int> basket;
+            int result = 0,len = 0;
+            int left = 0;
+            for (int i = 0; i <tree.size();i++)
+                  basket[tree[i]]++;
+                  len++;
+                  while (basket.size() > 2){
+                        basket[tree[left]--];
+                        if (basket[tree[left]] == 0) basket.erase(tree[left]);
+                        left++;
+                        len--;
+
+                  }
+                  if (result < len){
+                        result = len;
+                  }
+
+      }
+      return result;
+}
+};
+
+
+#########################################################problem_76#####################################
+class Solution {
+public:
+    bool compare_s(unordered_map<char,int> m,unordered_map<char,int> m_t){
+        //判断滑动窗口是否包含t
+        for(auto it=m_t.begin();it!=m_t.end();it++){
+            //个数小于t中字母个数，就错误
+            if(m[it->first]<it->second) return false;
+        }
+        return true;
+    }
+    string minWindow(string s, string t) {
+        if(s.size()<t.size()) return "";
+        unordered_map<char,int> m;
+        unordered_map<char,int> m_t;
+        for(char c:t){
+            m_t[c]++;
+        }
+        int slow=0;
+        int fast=0;
+        int len=INT_MAX;
+        vector<int> result={-1,-1};
+        while(fast<s.size()){
+            m[s[fast]]++;
+            while(compare_s(m,m_t)){//s包含了t
+                if(len>fast-slow+1){
+                   result[0]=slow;
+                   result[1]=fast;
+                   len=fast-slow+1;
+                }
+                m[s[slow]]--;
+                if(m[s[slow]]==0) m.erase(s[slow]);
+                slow++;
+            }
+            fast++;
+        }
+        if(result[0]==-1) return "";
+        return s.substr(result[0],len);
+
+    }
+};
+
+
+class Solution {
+public:
+    unordered_map <char, int> ori, cnt;
+
+    bool check() {
+        for (const auto &p: ori) {
+            if (cnt[p.first] < p.second) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    string minWindow(string s, string t) {
+        for (const auto &c: t) {
+            ++ori[c];
+        }
+
+        int l = 0, r = -1;
+        int len = INT_MAX, ansL = -1, ansR = -1;
+
+        while (r < int(s.size())) {
+            if (ori.find(s[++r]) != ori.end()) {
+                ++cnt[s[r]];
+            }
+            while (check() && l <= r) {
+                if (r - l + 1 < len) {
+                    len = r - l + 1;
+                    ansL = l;
+                }
+                if (ori.find(s[l]) != ori.end()) {
+                    --cnt[s[l]];
+                }
+                ++l;
+            }
+        }
+
+        return ansL == -1 ? string() : s.substr(ansL, len);
+    }
+};
+
+
+class Solution {
+public:
+    bool compare_s(unordered_map<char,int> &m,unordered_map<char,int> &m_t){
+        //判断滑动窗口是否包含t
+        for(auto it=m_t.begin();it!=m_t.end();it++){
+            //个数小于t中字母个数，就错误
+            if(m[it->first]<it->second) return false;
+        }
+        return true;
+    }
+    string minWindow(string s, string t) {
+        if(s.size()<t.size()) return "";
+        unordered_map<char,int> m;
+        unordered_map<char,int> m_t;
+        for(char c:t){
+            m_t[c]++;
+        }
+        int slow=0;
+        int fast=0;
+        int len=INT_MAX;
+        int result=-1;
+        while(fast<s.size()){
+            if(m_t.find(s[fast])!=m_t.end()) m[s[fast]]++;
+            while(compare_s(m,m_t)&&slow<=fast){//s包含了t
+                if(len>fast-slow+1){
+                   result=slow;
+                   len=fast-slow+1;
+                }
+                if(m_t.find(s[slow])!=m_t.end()) m[s[slow]]--;
+                slow++;
+            }
+            fast++;
+        }
+        if(result==-1) return "";
+        return s.substr(result,len);
+
+    }
+};
+
+
