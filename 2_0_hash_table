@@ -1,0 +1,562 @@
+#######################################################problem_242#####################################
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        int record[26]={0};
+        for(int i=0;i<s.size();i++){
+            record[s[i]-'a']++;
+        }
+        for(int j=0;j<t.size();j++){
+            record[t[j]-'a']--;
+        }
+        for(int k=0;k<26;k++){
+            if(record[k]!=0) return false;
+        }
+        return true;
+    }
+};
+
+#######################################################problem_383#####################################
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        unordered_map<char,int> m;
+        for(char c:ransomNote) m[c]--;
+        for(char c:magazine) m[c]++;
+        for(char c:ransomNote){
+            if(m[c]<0) return false;
+        }
+        return true;
+    }
+};
+
+
+#######################################################problem_49#####################################
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        //使用排序
+        unordered_map<string, vector<string>> mp;//创建哈希表
+        for (string str: strs) {//读取每个字符串
+            string key = str;
+            sort(key.begin(), key.end());//排序
+            mp[key].emplace_back(str);//将排序后相同的字符串作为key值，原来字符串用vector容器接收
+        }
+        //返回类型是vector<vector<string>>
+        vector<vector<string>> ans;
+        for (auto it = mp.begin(); it != mp.end(); ++it) {//auto会自动判断it类型
+            //it是迭代器，类型是vector<string>
+            //it->second是value值
+            ans.emplace_back(it->second);//将哈希表的内容一个个传入ans容器中,也可以用push_back()
+        }
+        return ans;
+    }
+};
+
+
+#######################################################problem_438#####################################
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        vector<int> result;
+        int record_s[26]={0};
+        int record_p[26]={0};
+        int len=s.size()-p.size();
+        int num=0;
+
+        if(len<0) return result;//这种情况要单独讨论
+
+        for(int k=0;k<p.size();k++){
+            record_p[p[k]-'a']++;
+            record_s[s[k]-'a']++;
+        }
+        for(int k=0;k<26;k++){
+            if(record_s[k]==record_p[k])
+            num++; 
+        }
+        if(num==26)
+        result.push_back(0);
+
+        for(int i=0;i<len;i++){
+            //将前p.size（）个数据清空，记录下一轮的数据，最后再和record_p进行对比，这个解法很妙
+            //我之前是在这个循环下面又嵌套一层循环去截取p.size（）个数据，结果超过时间限制了
+            //这里相当于每次减去第i个位置的值，然后再加上第i+p.size()位置的值
+            --record_s[s[i]-'a'];
+            ++record_s[s[i+p.size()]-'a'];
+            
+            //判断数组是否相等
+            num=0;
+            for(int k=0;k<26;k++){
+            if(record_s[k]==record_p[k])
+            num++; 
+            }
+            if(num==26)
+            result.push_back(i+1);
+
+        }
+        return result;     
+
+    }
+};
+
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        int p_record[26]={0};
+        vector<int> result;
+        int compare=0;
+        if(s.size()<p.size()) return result;
+        for(int i=0;i<p.size();i++)
+        {
+            p_record[p[i]-'a']++; //记录p字符串中的各个字母的数目
+        }
+        //主要思想是用一个和p一样大的窗口在s上做滑动，每次取出p.size()个字符串，然后进行比较
+        for(int i=0;i<(s.size()-p.size()+1);i++){
+            int s_record[26]={0};
+            for(int j=0;j<p.size();j++){
+                s_record[s[i+j]-'a']++;
+            }
+            //这里可以改进用vector直接存储结果就可以直接进行对比
+            compare=0;
+            for(int j=0;j<26;j++){
+                if(s_record[j]==p_record[j]){
+                    compare++;
+                }
+            }
+            if(compare==26){
+                result.push_back(i);
+            }
+        }
+        return result;
+
+    }
+};
+
+#######################################################problem_349#####################################
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        //利用哈希表 无序唯一
+        unordered_set<int> num1(nums1.begin(),nums1.end());//nums1.begin(),nums1.end()区间内的数据构造哈希表
+       unordered_set<int> num2(nums2.begin(),nums2.end());
+        unordered_set<int> result;
+        for(int num:num2){
+            if(num1.find(num)!=num1.end()){//find函数返回的是迭代器
+            //如果没有找到num这个数的话，会返回这个容器的结束迭代器（set.end()）
+            //end返回unordered_set最后一个元素下一个位置的迭代器
+                result.insert(num);
+            }
+        }
+        return vector<int>(result.begin(),result.end());
+
+
+    }
+};
+
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        vector<int> result;
+        int data1[1001]={0};//存放nums1的元素的值
+        int data2[1001]={0};
+        for(int i=0;i<nums1.size();i++){
+            data1[nums1[i]]++;
+            
+        }
+        for(int i=0;i<nums2.size();i++){
+            
+            data2[nums2[i]]++;
+        }        
+        for(int i=0;i<1001;i++){
+            if(data1[i]!=0&&data2[i]!=0){
+                result.push_back(i);
+            }
+        }
+        return result;
+    }
+};
+
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        unordered_map<int,int> m1;
+        vector<int> result;
+        for(auto it=nums1.begin();it!=nums1.end();it++) m1[*it]++;
+        for(auto it=nums2.begin();it!=nums2.end();it++){
+            if(m1.find(*it)!=m1.end()){
+                result.push_back(*it);
+                m1.erase(*it);
+            }
+        }
+        return result;
+    }
+};
+
+#######################################################problem_350#####################################
+
+class Solution {
+public:
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        //利用哈希表
+        //先处理短的数组，再处理长数组
+        unordered_map<int,int> m;
+        vector<int> result;
+        if(nums1.size()>nums2.size()){
+            nums1.swap(nums2);
+        }
+        for(int num:nums1){
+            ++m[num];//先存放短的数组中各个数字的个数
+        }
+        for(int num:nums2){
+            //先判断nums1中有无该数字
+            if(m[num]!=0){
+                result.push_back(num);//有该数字，说明属于交集，放入结果中
+                --m[num];//不管num在哪个数组的数量多，该代码都只会执行最少次数
+            }
+        }
+        return result;
+
+    }
+};
+
+class Solution {
+public:
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        vector<int> result;
+        int data1[1001]={0};
+        int data2[1001]={0};
+        for(int i=0;i<nums1.size();i++){
+            data1[nums1[i]]++;
+        }
+        for(int i=0;i<nums2.size();i++){
+            data2[nums2[i]]++;
+        }
+        for(int i=0;i<1001;i++){
+            if(data1[i]!=0&&data2[i]!=0){
+                int s=data1[i]>data2[i]?data2[i]:data1[i];
+                for(int j=0;j<s;j++){
+                    result.push_back(i);
+                }
+            }
+        } 
+        return result;      
+    }
+};
+
+#######################################################problem_202#####################################
+class Solution {
+public:
+    bool isHappy(int n) {
+        unordered_set<int> s;
+        s.insert(n);
+        while(n!=1){
+            s.insert(n);
+            int sum=0;
+            while(n){
+                int k=n%10;
+                sum+=k*k;
+                n=n/10;
+            }
+            if(s.find(sum)!=s.end()) return false;
+            n=sum;
+
+        }
+        return true;
+    }
+};
+
+
+class Solution {
+public:
+    bool isHappy(int n) {
+        //需要快速判断一个数是否出现在循环里面，考虑用哈希表的方法
+        //值会越来越大，最后接近无穷大。这种情况永远不会出现，具体见官方解答，所有的数最终都不会超过三位数，所以只会变成1或者进入循环
+        unordered_set<int> m;//这里用set也会通过
+        int sum=0;
+        while(1){
+            while(n){
+            sum+=(n%10)*(n%10);
+            n=n/10;
+            }
+            if(sum==1) 
+            return true;
+            if(m.find(sum)!=m.end()) return false;
+            m.insert(sum);
+            n=sum;
+            sum=0;
+        }
+        
+    }
+};
+
+
+#######################################################problem_1#####################################
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        vector<int> result;
+        int s=0;
+        unordered_map<int,int> temp;
+        for(int i=0;i<nums.size()-1;i++){
+            for(int j=i+1;j<nums.size();j++){
+                s=0;
+                s=nums[i]+nums[j];
+                if(s==target){
+                    result.push_back(i);
+           
+                    result.push_back(j);
+                }
+            }
+        }
+        return result;
+    }
+};
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        //利用哈希表查找
+        unordered_map<int,int> m;
+        vector<int> result;
+        for(int i=0;i<nums.size();i++){
+            m[nums[i]]=i;//将数组元素放入哈希表中（如果出现nums[i]相同的情况会怎么样）
+        }
+        int i=0;
+        while(i<nums.size()){
+            auto iter=m.find(target-nums[i]);
+            if(iter!=m.end()){
+                if(iter->second!=i){//判断是否找的是本身（eg：target=6，3+3=6，此时两个下标相等）
+                result.push_back(iter->second);
+                result.push_back(i);
+                return result;
+                }
+
+            }
+            i++;
+        }
+        return {};//返回一个空容器
+    }
+};
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        vector<int> result;
+        multimap<int,int> m;
+        for(int i=0;i<nums.size();i++) m.insert(pair<int,int>(nums[i],i));
+        for(auto it=m.begin();it!=m.end();it++){
+            auto index=m.find(target-it->first);
+            if(index!=m.end()&&index!=it){
+                result.push_back(index->second);
+                result.push_back(it->second);
+                break;
+            }
+        }
+        return result;
+    }
+};
+#######################################################problem_454#####################################
+class Solution {
+public:
+    int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4) {
+        //这道题只需要输出满足条件的个数，不需要输出具体的下标
+        //使用哈希表m1存放数组A和B的每两个元素之和以及个数
+        
+        unordered_map<int,int> m1;
+        int sum=0;
+        for(int i=0;i<nums1.size();i++){
+            for(int j=0;j<nums2.size();j++){
+                ++m1[nums1[i]+nums2[j]];
+            }
+        }
+        for(int c:nums3){
+            for(int d:nums4){
+                if(m1.find(-(c+d))!=m1.end()){
+                    //在剩下两个数组中搜寻是否有四数相加等于0的情况
+                    sum+=m1[-(c+d)];
+                }
+            }
+        }
+        return sum;
+
+    }
+};
+
+
+class Solution {
+public:
+    int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4) {
+        //两个数组为一组，计算两两组合的和，然后再利用哈希表进行查找
+        //和可以出现重复的
+        multiset<int> s1;
+        // multiset<int> s2;
+        int s=0;
+        int n=nums1.size();
+        int result=0;
+        //记录第一个和第二个数组中的和
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                s=nums1[i]+nums2[j];
+                s1.insert(s);
+            }
+        }
+        //记录第三个和第四个数组中的和
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                s=nums3[i]+nums4[j];         
+                if( s1.find(-s)!=s1.end()){
+                    result=result+s1.count(-s);
+                }
+              
+            }
+        }
+
+        return result;
+
+    }
+};
+
+
+#######################################################problem_15#####################################
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        //采用双指针方法
+        vector<vector<int>> result;
+        sort(nums.begin(), nums.end());
+        int left=0;
+        int right=nums.size()-1;
+        for(int i=0;i<nums.size()-2;i++){
+            //如果每次循环的第一个数大于0了，说明没有符合条件的三元组了，直接返回result就行
+            if(nums[i]>0){
+                return result;
+            }
+            //a+b+c=0
+           // 正确去重a方法
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            left=i+1;
+            right=nums.size()-1;
+            while(left<right){
+                if((nums[i]+nums[right]+nums[left])==0){
+                    //这样进行去重会超出时间限制，vector的find所需时间比较久
+                    // if(find(result.begin(),result.end(),vector<int>{nums[i], nums[left], nums[right]})==result.end())
+                    // result.push_back(vector<int>{nums[i], nums[left], nums[right]});  
+                                 
+                    result.push_back({nums[i],nums[right],nums[left]});
+                    //还需要去重b和c
+                    //排序后b和c发生重复的情况都是相邻的位置发生重复
+                    while (right > left && nums[right] == nums[right - 1]) right--;
+                    while (right > left && nums[left] == nums[left + 1]) left++;
+                    right--;
+                    left++;
+                }
+                else if((nums[i]+nums[right]+nums[left])>0){
+                    right--;
+                }
+                else{
+                    left++;
+                }
+            }
+        }
+        
+        return result;
+
+    }
+};
+#######################################################problem_18#####################################
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> result;
+        sort(nums.begin(),nums.end());//由小到大排序
+        int left=0;
+        int right=nums.size()-1;
+        if(nums.size()<4) return result;
+        //使用两层for循环确定a和b
+        for(int i=0;i<nums.size()-3;i++){//限制了nums的长度必须大于等于4
+            if(nums[i]>target){//如果整个数组都是负数，target也是负数的话，这样写就容易错过正确答案
+                return result;
+            }
+            if(i>0&&nums[i]==nums[i-1]){
+                continue;
+            }
+            for(int j=i+1;j<nums.size()-2;j++){
+                
+                right=nums.size()-1;
+                if((j>i+1)&&nums[j]==nums[j-1]){
+                    j++;
+                }
+                left=j+1;
+                while(left<right){
+                    if((nums[i]+nums[j]+nums[left]+nums[right])==target){
+                        result.push_back({nums[i],nums[j],nums[right],nums[left]});
+                        while(left<right&&nums[left]==nums[left+1])left++;
+                        while(left<right&&nums[right]==nums[right-1])right--;
+                        left++;
+                        right--;
+                    }
+                    else if((nums[i]+nums[j]+nums[left]+nums[right])>target){
+                        right--;
+                    }
+                    else{
+                        left++;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> result;
+        sort(nums.begin(),nums.end());//由小到大排序
+        int left=0;
+        int right=nums.size()-1;
+        if(nums.size()<4) return result;
+        //使用两层for循环确定a和b
+        for(int i=0;i<nums.size()-3;i++){//限制了nums的长度必须大于等于4
+            if(nums[i]>target&&nums[i]>=0){//如果整个数组都是负数，target也是负数的话，这样写就容易错过正确答案
+                return result;
+            }
+            if(i>0&&nums[i]==nums[i-1]){
+                continue;
+            }
+            for(int j=i+1;j<nums.size()-2;j++){
+                if((nums[i]+nums[j]>target)&&nums[i]+nums[j]>=0){
+                    break;
+                }
+                right=nums.size()-1;
+                if((j>i+1)&&nums[j]==nums[j-1]){
+                    // j++;//这里不能这么写，因为直接这样写不加continue的话j并没有得到判断，容易超出范围
+                    continue;
+                    
+                }
+                left=j+1;
+                while(left<right){
+                    //这里不能对四个数相加的和加括号，不然也会溢出，
+                    //因为四个数相加会 直接得到int型的数，会溢出，而不加括号是直接转换成long型的
+                    if((long)nums[i]+nums[j]+nums[left]+nums[right]==target){
+                        result.push_back({nums[i],nums[j],nums[right],nums[left]});
+                        while(left<right&&nums[left]==nums[left+1])left++;
+                        while(left<right&&nums[right]==nums[right-1])right--;
+                        left++;
+                        right--;
+                    }
+                    else if((long)nums[i]+nums[j]+nums[left]+nums[right]>target){
+                        right--;
+                    }
+                    else{
+                        left++;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+};
+
