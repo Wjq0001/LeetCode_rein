@@ -1,0 +1,310 @@
+############################################################problem_344################################################
+class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        //使用双指针
+        int slow=0;
+        int fast=s.size()-1;
+        int temp=0;
+        while(slow<fast){
+            temp=s[slow];
+            s[slow]=s[fast];
+            s[fast]=temp;
+            slow++;
+            fast--;
+        }
+       
+
+    }
+};
+############################################################problem_541################################################
+class Solution {
+public:
+    string reverseStr(string s, int k) {
+        int epoch=s.size()/(2*k);
+        for(int i=0;i<s.size(),epoch>0;i+=2*k,epoch--){//反转整数个2k
+            reverse(s.begin()+i,s.begin()+i+k);
+        }
+        int res=s.size()-s.size()/(2*k)*(2*k);
+        if(res<k){
+            reverse(s.begin()+s.size()/(2*k)*(2*k),s.end());
+        }
+        else{
+            reverse(s.begin()+s.size()/(2*k)*(2*k),s.end()-res+k);
+        }
+        return s;
+    }
+};
+
+############################################################problem_05################################################
+class Solution {
+public:
+    string replaceSpace(string s) {
+        //双指针
+        int cout=0;
+        for(char c:s){
+            if(c==' ') cout++;
+        }
+        int i=s.size()-1;
+        s.resize(s.size()+2*cout);
+        int j=s.size()-1;
+        for(i,j;i>=0;i--){
+            if(s[i]==' '){
+                s[j]='0';
+                s[j-1]='2';
+                s[j-2]='%';
+                j=j-3;
+            }
+            else{
+                s[j--]=s[i];
+            }
+        }
+        return s;
+    }
+};
+
+
+
+class Solution {
+public:
+    string replaceSpace(string s) {
+        //双指针
+        int cout=0;
+        for(char c:s){
+            if(c==' ') cout++;
+        }
+        int i=s.size()-1;
+        s.resize(s.size()+2*cout);
+        int j=s.size()-1;
+        for(i,j;i>=0;i--){
+            if(s[i]==' '){
+                s[j]='0';
+                s[j-1]='2';
+                s[j-2]='%';
+                j=j-3;
+            }
+            else{
+                s[j--]=s[i];
+            }
+        }
+        return s;
+    }
+};
+
+############################################################problem_151################################################
+class Solution {
+public:
+    void reverse(string &s,int start,int end){
+        for(int i=start,j=end;i<j;i++,j--){
+            swap(s[i],s[j]);
+        }
+    }
+    string reverseWords(string s) {
+        int slowIndex=0;
+        int fastIndex=s.size()-1;
+        while(slowIndex<s.size()&&s[slowIndex]==' ') slowIndex++;
+        while(fastIndex>=0&&s[fastIndex]==' ') fastIndex--;
+        s.erase(fastIndex+1,s.size()-fastIndex);
+        s.erase(0,slowIndex);
+        //去除中间空格
+        slowIndex=0;
+        int i=0;//快指针
+        for(;i<s.size();i++){
+            if(s[i]!=' '){
+                if(slowIndex!=0) s[slowIndex++]=' ';
+                while(i<s.size()&&s[i]!=' '){
+                   s[slowIndex++]=s[i++]; 
+                }   
+            }
+        }
+        s.resize(slowIndex);//取前面的slowIndex个
+        //开始反转
+        for(int i=0;i<s.size();i++){
+            if(s[i]!=' '){
+                int start=i;
+                while(i<s.size()&&s[i]!=' '){
+                    i++;
+                }   
+                reverse(s,start,i-1);             
+            }
+        }
+        reverse(s,0,s.size()-1);
+        return s;
+
+    }
+};
+
+
+############################################################problem_58################################################
+class Solution {
+public:
+    string reverseLeftWords(string s, int n) {
+        string result;
+        for(int i=n;i<s.size();i++){
+            result.push_back(s[i]);
+        }
+        for(int i=0;i<n;i++){
+            result.push_back(s[i]);
+        }
+        return result;
+    }
+};
+
+class Solution {
+public:
+    void reverse(string &s,int begin ,int end){
+        for(int i=begin,j=end;i<j;i++,j--){
+            swap(s[i],s[j]);
+        }
+    }
+
+    string reverseLeftWords(string s, int n) {
+        //先单独反转前n个字符和后面的字符
+        reverse(s,0,n-1);
+        reverse(s,n,s.size()-1);
+        //最后反转整个字符串
+        reverse(s,0,s.size()-1);
+        return s;
+    }
+
+};
+
+
+############################################################problem_28################################################
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int slow=0;
+        int result=-1;
+        int j=1;
+        for(int i=0;i<haystack.size();i++){
+            if(haystack[i]==needle[0]){
+                for(j=1;j<needle.size();j++){
+                    if(haystack[i+j]!=needle[j]) break;
+                }
+                if(j==needle.size()) {
+                    result=i;
+                    break;
+                }
+            }
+            
+        }
+
+        return result;
+    }
+};
+
+
+class Solution {
+public:
+    void getNext(int* next,const string &s){
+        //统一做了-1操作
+        next[0]=-1;
+        int j=-1;
+        for(int i=1;i<s.size();i++){
+            while(j>=0&&s[i]!=s[j+1]){
+                j=next[j];
+            }
+            if(s[i]==s[j+1]){
+                j++;
+            }
+            next[i]=j;
+        }
+    }
+
+    int strStr(string haystack, string needle) {
+        int next[needle.size()];
+        getNext(next,needle);//得到next表
+        int j=-1;//j指向模式串里面的下标-1
+        for(int i=0;i<haystack.size();i++){//i为文本串起始位置
+            while(j>=0&&haystack[i]!=needle[j+1]){//不匹配的情况
+                j=next[j];//查找上一个匹配的下标位置
+            }
+            if(haystack[i]==needle[j+1]){
+                j++;//同时后移i和j
+            }
+            if(j==(needle.size()-1))
+            {
+                return i-j;//说明匹配上了,返回开始的下标值
+            }
+        }
+        return -1;
+    }
+};
+
+############################################################problem_459################################################
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        bool result=false;
+        for(int i=1;i<=s.size()/2;i++){
+            //子串的长度为i+1
+            string sub_s;
+            if(s.size()%i!=0)
+            {
+                continue; //强迫开始下一次循环
+            }
+            //比较子串和剩余部分是否匹配
+            int j=0;
+            for(j=i;j<s.size();j++){
+                if(s[j]!=s[j-i]){//这样写就可以遍历所有情况了
+                    break;//不匹配，跳出循环
+                }        
+            }
+            if(j==s.size()){
+                result=true;
+                break;
+            }
+
+        }
+        return result;
+
+    }
+};
+
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        string t=s+s;
+        //去掉首尾字符，避免搜索到首尾字符串
+        t.erase(t.begin());
+        t.erase(t.end()-1);
+        //std::string::npos等于size_type类型可以表示的最大值，用来表示一个不存在的位置
+        if(t.find(s)!=std::string::npos) return true;
+        else return false;
+    }
+};
+
+class Solution {
+public:
+
+    void getNext(int* next,string &s){
+        next[0]=-1;//统一做了减一的操作
+        int j=-1;//j代表此时的下标减一/i下标之前的最长相等前后缀的长度-1
+        for(int i=1;i<s.size();i++){
+            while(j>=0&&s[i]!=s[j+1]){
+                j=next[j];//查询前一位的next值，进行回退,因为下标是做了-1操作，所以j就代表前一位的位置
+            }
+            if(s[i]==s[j+1]){
+                j++;
+            }
+            next[i]=j;//更新next数组的值
+        }
+    }
+
+    bool repeatedSubstringPattern(string s) {
+        //KMP算法
+        int next[s.size()];
+        getNext(next,s);
+        int len=s.size();
+        if(next[len-1]!=-1&&len%(len-next[len-1]-1)==0){
+            return true;
+        }
+        else return false;
+
+    }
+};
+
+
+
+
