@@ -1,0 +1,616 @@
+#################################################################problem_232#################################################################
+class MyQueue {
+public:
+    stack<int> stin;//输入栈
+    stack<int> stout;//输出栈
+
+    MyQueue() {
+
+    }
+    
+    void push(int x) {
+        stin.push(x);
+    }
+    
+    int pop() {
+        if(stout.empty()){//输出栈为空
+            while(!stin.empty()){
+                stout.push(stin.top());
+                stin.pop();
+            }
+        }
+        int k=stout.top();
+        stout.pop();
+        return k;
+
+    }
+    
+    int peek() {
+    //这个代码的思路和pop类似，应该再精简代码，直接利用队列已有的pop函数，再把弹出的数添加回去
+        if(stout.empty()){//输出栈为空
+            while(!stin.empty()){
+                stout.push(stin.top());
+                stin.pop();
+            }
+        }
+        return stout.top();
+
+    }
+    
+    bool empty() {
+        if(stin.empty()&&stout.empty()){
+            return true;
+        }
+        return false;
+
+    }
+};
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue* obj = new MyQueue();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->peek();
+ * bool param_4 = obj->empty();
+ */
+
+
+
+class MyQueue {
+public:
+    stack<int> stin;//输入栈
+    stack<int> stout;//输出栈
+    MyQueue() {
+
+    }
+    
+    void push(int x) {
+        //stout里面放了队列的全部元素，栈顶就是队头
+        while(!stout.empty()){
+            stin.push(stout.top());
+            stout.pop();
+        }
+        stin.push(x);
+        while(!stin.empty()){
+            stout.push(stin.top());
+            stin.pop();
+        }
+    }
+    
+    int pop() {
+        int k=stout.top();
+        stout.pop();
+        return k;
+    }
+    
+    int peek() {
+        return stout.top();
+    }
+    
+    bool empty() {
+        return stout.empty();
+    }
+};
+
+
+
+#################################################################problem_225#################################################################
+class MyStack {
+public:
+    queue<int> q1;
+    queue<int> q1_copy;//q1队列的备份
+
+    MyStack() {
+
+    }
+    
+    void push(int x) {
+        q1.push(x);
+    }
+    
+    int pop() {
+        //相当于移除q1的队尾元素
+        int size=q1.size()-1;
+        // while(size--){
+        //     q1_copy.push(q1.front());
+        //     q1.pop();
+        // }
+        for(int i=0;i<size;i++){//这里不能用写成i<q1.size()-1,因为q1是变量
+            q1_copy.push(q1.front());//将队尾元素前的元素都保存到副本中
+            q1.pop();
+        }
+        int k=q1.front();
+        q1.pop();
+        int size2=q1_copy.size();
+        for(int i=0;i<size2;i++){
+            q1.push(q1_copy.front());
+            q1_copy.pop();
+        }
+        return k;
+    }
+    
+    int top() {
+        return q1.back();
+
+    }
+    
+    bool empty() {
+        return q1.empty();
+    }
+};
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack* obj = new MyStack();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->top();
+ * bool param_4 = obj->empty();
+ */
+
+class MyStack {
+public:
+    queue<int> q1;
+
+    MyStack() {
+
+    }
+    
+    void push(int x) {
+        q1.push(x);
+    }
+    
+    int pop() {
+        //将最后一个元素前的元素全移动到队尾
+        int size=q1.size()-1;
+        while(size--){
+            q1.push(q1.front());
+            q1.pop();
+        }
+        int result=q1.front();
+        q1.pop();
+        return result;
+    }
+    
+    int top() {
+        return q1.back();
+
+    }
+    
+    bool empty() {
+        return q1.empty();
+    }
+};
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack* obj = new MyStack();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->top();
+ * bool param_4 = obj->empty();
+ */
+
+#################################################################problem_20#################################################################
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> temp;
+        if(s.size()%2==1){
+            return false;
+        }
+        for(int i=0;i<s.size();i++){
+            //将左括号的对应右括号压栈
+            if(s[i]=='[') temp.push(']');
+            else if(s[i]=='{') temp.push('}');
+            else if(s[i]=='(') temp.push(')');
+            //左括号必须以正确的顺序闭合，如果不相等说明没有括号类型不匹配
+            //如果为空的话说明此时进来的是右括号，并且没有与之匹配的左括号，右括号多余
+            else if(temp.empty()||temp.top()!=s[i]) return false;//在使用pop前先判断是否为空
+            else temp.pop();//如果栈不为空并且第i个字符和栈顶字符相等，说明匹配上了，将栈顶元素弹出
+        }
+        return temp.empty();//循环完后如果不为空说明无效，左括号多余
+    }
+};
+
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+        for(int i=0;i<s.size();i++){
+            if(!st.empty()&&s[i]=='}'&&st.top()=='{') st.pop(); 
+            else if(!st.empty()&&s[i]==']'&&st.top()=='[') st.pop(); 
+            else if(!st.empty()&&s[i]==')'&&st.top()=='(') st.pop(); 
+            else st.push(s[i]);
+
+        }
+        return st.empty();
+    }
+};
+
+#################################################################problem_1047#################################################################
+class Solution {
+public:
+    string removeDuplicates(string s) {
+        stack<char> temp;
+        for(int i=0;i<s.size();i++){
+            if(!temp.empty()&&s[i]==temp.top()){//如果不为空且出现重复项，则弹出元素
+                temp.pop();
+            }
+            else temp.push(s[i]);//为空或者没有出现重复项，将元素压栈
+        }
+
+        string result="";
+        int k=temp.size();
+        while(k--){
+            result+=temp.top();
+            temp.pop();
+        }
+        reverse(result.begin(),result.end());//反转
+        return result;
+    }
+};
+
+#################################################################problem_150#################################################################
+class Solution {
+public:
+    int evalRPN(vector<string>& tokens) {
+        //利用栈来计算
+        stack<int> result;
+        for(int i=0;i<tokens.size();i++){
+            if(tokens[i]=="+"||tokens[i]=="-"||tokens[i]=="*"||tokens[i]=="/"){
+                int temp1=result.top();
+                result.pop();
+                int temp2=result.top();
+                result.pop();
+                if(tokens[i]=="+") result.push(temp1+temp2);
+                if(tokens[i]=="-") result.push(temp2-temp1);
+                if(tokens[i]=="*") result.push(temp1*temp2);
+                if(tokens[i]=="/") result.push(temp2/temp1);
+            }
+            else{
+                result.push(stoi(tokens[i]));//将字符串转换为整型
+            }
+        }
+        return result.top();
+
+    }
+};
+#################################################################problem_239#################################################################
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int> result;
+        for(int i=0;i<nums.size()-k+1;i++){//i为每个滑动窗口的起始位置
+            int max=nums[i];
+            for(int j=1;j<k;j++){
+                max=max>nums[i+j]?max:nums[i+j];
+            }
+            result.push_back(max);
+
+        }
+        return result;
+    }
+};
+
+
+class Solution {
+private:
+    //实现单调队列，队内单调递减
+    class myqueue{
+    public://类内默认为私有，所以记得加public
+        deque<int> que;
+        void pop(int value){
+            if(!que.empty()&&que.front()==value){//当要弹出的元素等于队头元素值时才弹出
+                que.pop_front();
+            }
+        }
+
+        void push(int value){
+            while(!que.empty()&&value>que.back()){
+                que.pop_back();
+            }
+            que.push_back(value);
+
+        }
+
+        int front(){
+            return que.front();//队头元素就是最大的
+        }
+    };
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        myqueue que;
+        vector<int> result;
+        //先处理第一个窗口
+        for(int i=0;i<k;i++){
+            que.push(nums[i]);
+        }
+        result.push_back(que.front());
+        //再处理后续窗口
+        for(int i=k;i<nums.size();i++){
+            que.pop(nums[i-k]);//先弹出窗口的第一个元素
+            que.push(nums[i]);//存放新窗口的下一个值
+            result.push_back(que.front());
+        }
+        return result;
+    }
+};
+#################################################################problem_347#################################################################
+class Solution {
+public:
+    class mycomprison{
+        public:
+        bool operator()(const pair<int,int>& left,const pair<int,int>& right){
+            return left.second>right.second;//按照second的大小进行升序排列，形成小顶堆
+        }
+    };
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        vector<int> result;
+        map<int,int> temp;
+        for(int i=0;i<nums.size();i++){
+            temp[nums[i]]++;
+        }
+        priority_queue<pair<int,int>,vector<pair<int,int>>,mycomprison> pri_que;
+        for(map<int,int>::iterator it=temp.begin();it!=temp.end();it++){
+            pri_que.push(*it);//把元素和对应的频率值放进去
+            if(pri_que.size()>k){//始终保持优先级队列中只有k个元素
+                pri_que.pop();
+            }
+
+        }
+        for(int i=0;i<k;i++){
+            result.push_back(pri_que.top().first);//可以按 任意顺序 返回答案,first的值就是数组元素
+            pri_que.pop();
+        }
+        return result;
+
+
+        
+    }
+};
+#################################################################problem_71#################################################################
+class Solution {
+public:
+    string simplifyPath(string path) {
+        stack<char> result;
+        result.push('/');
+        for(int i=1;i<path.size();i++){
+            if(path[i]=='/' && path[i-1]=='/')
+            {
+                continue;//出现多个连续'/'，跳过
+            }
+            else if(path[i]=='.'  ){
+                if(path[i+1]=='.'&&i<path.size()-1){//两个点
+                    //弹出1个'/'，直到遇到第2个'/'时停止
+                    int s=0;
+                    while(s<2&&result.size()>1){
+                        if(result.top()=='/')
+                        {
+                            s++;
+                        }
+                        if(s==2) break;
+                        else result.pop();
+                    }
+                    i++;//加一跳出第二个点
+                }
+                else{//一个点
+                    continue;
+                }
+            }
+            else if(result.top()=='/'&&path[i]=='/'){
+                continue;
+            }
+            else result.push(path[i]);
+        }
+        //最后一个目录名（如果存在)不能以 '/' 结尾。
+        if(result.top()=='/'&&result.size()>1) result.pop();
+        string s="";
+        int size=result.size();
+        while(size--){
+            s+=result.top();
+            result.pop();
+        }
+        reverse(s.begin(),s.end());
+        return s;
+    }
+};
+
+
+
+class Solution {
+public:
+    string simplifyPath(string path) {
+        stack<string> result;//栈里面只存放文件/目录名称
+        // result.push('/');
+        for(int i=0;i<path.size();i++){
+            if(path[i]=='/'){
+                continue;
+            }
+            string temp="";
+            while(path[i]!='/'&&i<path.size()){
+                temp+=path[i++];//跳过所有的"/"
+            }
+            if(temp==".") continue;
+            // else if(temp==".."&&!result.empty()){//注意这里判断是否为空不能放在这个if括号里面，不然会出错，如果此时栈为空，但是又遇到了..，本来应该不做任何操作的，但是此时会将".."压栈
+            //     result.pop();
+            // }
+            else if(temp==".."){
+                if(!result.empty())
+                result.pop();
+            }
+            else result.push(temp);
+        }
+        string s="";
+        stack<string> re_reverse;
+        int size=result.size();
+        while(size--){//先对栈的结果进行反转
+            re_reverse.push(result.top());
+            result.pop();
+        }
+        size=re_reverse.size();
+        if(size==0) s="/";//如果没有目录的话，记得加上"/"
+        while(size--){
+            s=s+"/"+re_reverse.top();
+            re_reverse.pop();
+        }
+        return s;
+    }
+};
+class Solution {
+public:
+    string simplifyPath(string path) {
+        stack<string> result;//栈里面只存放文件/目录名称
+        // result.push('/');
+        for(int i=0;i<path.size();i++){
+            if(path[i]=='/'){
+                continue;
+            }
+            string temp="";
+            while(path[i]!='/'&&i<path.size()){
+                temp+=path[i++];//跳过所有的"/"
+            }
+            if(temp==".") continue;
+            // else if(temp==".."&&!result.empty()){//注意这里判断是否为空不能放在这个if括号里面，不然会出错，如果此时栈为空，但是又遇到了..，本来应该不做任何操作的，但是此时会将".."压栈
+            //     result.pop();
+            // }
+            else if(temp==".."){
+                if(!result.empty())
+                result.pop();
+            }
+            else result.push(temp);
+        }
+        string s="";
+        stack<string> re_reverse;
+        int size=result.size();
+        while(size--){//先对栈的结果进行反转
+            re_reverse.push(result.top());
+            result.pop();
+        }
+        size=re_reverse.size();
+        if(size==0) s="/";//如果没有目录的话，记得加上"/"
+        while(size--){
+            s=s+"/"+re_reverse.top();
+            re_reverse.pop();
+        }
+        return s;
+    }
+};
+class Solution {
+public:
+    string simplifyPath(string path) {
+        stack<string> result;//栈里面只存放文件/目录名称
+        // result.push('/');
+        for(int i=0;i<path.size();i++){
+            if(path[i]=='/'){
+                continue;
+            }
+            string temp="";
+            while(path[i]!='/'&&i<path.size()){
+                temp+=path[i++];//跳过所有的"/"
+            }
+            if(temp==".") continue;
+            // else if(temp==".."&&!result.empty()){//注意这里判断是否为空不能放在这个if括号里面，不然会出错，如果此时栈为空，但是又遇到了..，本来应该不做任何操作的，但是此时会将".."压栈
+            //     result.pop();
+            // }
+            else if(temp==".."){
+                if(!result.empty())
+                result.pop();
+            }
+            else result.push(temp);
+        }
+        string s="";
+        stack<string> re_reverse;
+        int size=result.size();
+        while(size--){//先对栈的结果进行反转
+            re_reverse.push(result.top());
+            result.pop();
+        }
+        size=re_reverse.size();
+        if(size==0) s="/";//如果没有目录的话，记得加上"/"
+        while(size--){
+            s=s+"/"+re_reverse.top();
+            re_reverse.pop();
+        }
+        return s;
+    }
+};
+class Solution {
+public:
+    string simplifyPath(string path) {
+        stack<string> result;//栈里面只存放文件/目录名称
+        // result.push('/');
+        for(int i=0;i<path.size();i++){
+            if(path[i]=='/'){
+                continue;
+            }
+            string temp="";
+            while(path[i]!='/'&&i<path.size()){
+                temp+=path[i++];//跳过所有的"/"
+            }
+            if(temp==".") continue;
+            // else if(temp==".."&&!result.empty()){//注意这里判断是否为空不能放在这个if括号里面，不然会出错，如果此时栈为空，但是又遇到了..，本来应该不做任何操作的，但是此时会将".."压栈
+            //     result.pop();
+            // }
+            else if(temp==".."){
+                if(!result.empty())
+                result.pop();
+            }
+            else result.push(temp);
+        }
+        string s="";
+        stack<string> re_reverse;
+        int size=result.size();
+        while(size--){//先对栈的结果进行反转
+            re_reverse.push(result.top());
+            result.pop();
+        }
+        size=re_reverse.size();
+        if(size==0) s="/";//如果没有目录的话，记得加上"/"
+        while(size--){
+            s=s+"/"+re_reverse.top();
+            re_reverse.pop();
+        }
+        return s;
+    }
+};
+class Solution {
+public:
+    string simplifyPath(string path) {
+        stack<string> result;//栈里面只存放文件/目录名称
+        // result.push('/');
+        for(int i=0;i<path.size();i++){
+            if(path[i]=='/'){
+                continue;
+            }
+            string temp="";
+            while(path[i]!='/'&&i<path.size()){
+                temp+=path[i++];//跳过所有的"/"
+            }
+            if(temp==".") continue;
+            // else if(temp==".."&&!result.empty()){//注意这里判断是否为空不能放在这个if括号里面，不然会出错，如果此时栈为空，但是又遇到了..，本来应该不做任何操作的，但是此时会将".."压栈
+            //     result.pop();
+            // }
+            else if(temp==".."){
+                if(!result.empty())
+                result.pop();
+            }
+            else result.push(temp);
+        }
+        string s="";
+        stack<string> re_reverse;
+        int size=result.size();
+        while(size--){//先对栈的结果进行反转
+            re_reverse.push(result.top());
+            result.pop();
+        }
+        size=re_reverse.size();
+        if(size==0) s="/";//如果没有目录的话，记得加上"/"
+        while(size--){
+            s=s+"/"+re_reverse.top();
+            re_reverse.pop();
+        }
+        return s;
+    }
+};
